@@ -13,6 +13,7 @@ router.get('/', function(req, res) {
       res.sendStatus(500);
     } else {
       res.send(result);
+      console.log('result:', result);
     }
   });
 });
@@ -25,7 +26,8 @@ router.post('/', function(req, res) {
   var taskObject = req.body;
 
   var addedTask = new Task({
-    name: taskObject.taskName
+    name: taskObject.taskName,
+    description: taskObject.description
   });
 
   // db query
@@ -114,19 +116,23 @@ router.put('/:id', function(req, res) {
   var taskObject = req.body;
   console.log('hit complete route');
   console.log('here is the id to complete ->', taskToUpdateId);
+  console.log('description:', taskObject.description);
 
   // db query
   Task.findByIdAndUpdate(
     {_id: taskToUpdateId},
     {
-      $set: {name: taskObject.name}
-    },
+      $set: {name: taskObject.name,
+            description: taskObject.description
+    }},
     function(err, result) {
       if(err) {
         console.log('Error completing task:', err);
+        console.log('taskObject:', taskObject);
         res.sendStatus(500);
       } else {
         res.sendStatus(200);
+        console.log('taskObject:', taskObject);
       }
     }
   );
